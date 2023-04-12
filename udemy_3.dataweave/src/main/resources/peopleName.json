@@ -1,0 +1,16 @@
+{
+	"people":{
+		"person":{
+			"name": "John"
+		},
+		"person":{
+			"name": "Leo"
+		},
+		"person":{
+			"name": "Joana"
+		},
+		"person":{
+			"name": "Juiz"
+		}
+	}
+}

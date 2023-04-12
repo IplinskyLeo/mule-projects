@@ -28,13 +28,122 @@ output application/xml
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<ee:transform doc:name="Transform Message" doc:id="cb89c427-e7e0-4157-90da-65758e533c77" >
+		<ee:transform doc:name="Criando Vars" doc:id="cb89c427-e7e0-4157-90da-65758e533c77" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
+
+var myVar = {
+  "newString": "hello world"
+}
+
 output application/java
 ---
+myVar]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="DW Function" doc:id="e23f346c-cbac-4c3c-a333-2016c17765d6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+var teste = "apis"
+var myVar ={
+	"sum": sum([3,8,9,2,1,2]),
+	"avg": avg([100,200,400,800]),
+	"even": isEven(1),
+	"odd": isOdd(1),
+	"uppercase": upper("Mulesoft "++ teste),
+	"timestamp": now()
+}
+
+output application/json
+---
+
+myVar]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="dataweaveFiles" doc:id="8e73b50c-056c-458f-a03e-269895b84f73" >
+		<ee:transform doc:name="Read Content File from Classpath" doc:id="dab17b7e-d7c0-46ea-a3ab-6b1ecb75a32c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+
+readUrl("classpath://peopleName.json")]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Create Metadata Type and Use as a Payload" doc:id="4d171bb7-2e21-4bbe-8cdc-0654d1722643" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="dataweaveObjectArray" doc:id="52369682-9921-4184-ba96-e32c04dcf353" >
+		<ee:transform doc:name="Map from Array to Object" doc:id="b94685ab-091a-466d-890a-b4d9f74d4517" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+
+var customArray = ["Mulesoft", "Course", "Fundamentals"]
+
+output application/json
+---
+
+customArray map ((item, index) ->
+	index: item ++ "_" ++ index
+)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Pluck Objects from an Object to an Array" doc:id="536aedf1-14e9-478b-b483-9675496c0292" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+
+var customObj = {
+	"0": "Mulesoft",
+	"1": "Course",
+	"2": "Fundamentals"
+}
+
+output application/json
+---
+
+customObj pluck ((value) -> 
+	value
+)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Filter an Array and Return Only Matching Items" doc:id="f388e5a4-14da-4d06-9184-63a5aa4d1ae2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+
+var customArray = [1,2,3,4,5,6,7,8,9,10]
+
+output application/json
+---
+"collection": customArray filter ((item, index) -> 
+	item /2 >= 4
+)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Filter an Object and Return only the Matching Items" doc:id="3f99f3da-b46a-4165-9682-7a8994774490" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+
+var customObj = {
+	"0": "Mulesoft",
+	"1": "Course",
+	"2": "Fundamentals",
+	"3": "Udemy"
+}
+output application/json
+---
 {
-}]]></ee:set-payload>
+	"collection": customObj filterObject ((value, key) ->
+		sizeOf(value) > 6 and (key contains 2)
+	)
+}
+]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>
