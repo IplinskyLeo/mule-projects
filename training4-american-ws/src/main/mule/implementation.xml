@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<db:config name="Database_Config3" doc:name="Database Config" doc:id="d73bf476-e632-4cb2-a4b7-06300ba6710f" >
+		<db:my-sql-connection host="mudb.learn.mulesoft.com" port="3306" user="mule" password="mule" database="training" />
+	</db:config>
+	<flow name="GetFlights" doc:id="707b4a3e-98f5-45a3-a415-cbb051dd493f" >
+<!-- [STUDIO:"Listener"]		<http:listener doc:name="Listener" doc:id="fa5e7285-3286-4178-ae6c-e76f78210453" config-ref="HTTP_Listener_config" path="/flights" allowedMethods="GET" /> [STUDIO] -->
+		<db:select doc:name="Select" doc:id="a752c95c-4eb5-4897-910a-ce43fcab499a">
+			<db:sql ><![CDATA[SELECT * FROM American]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="c34440c2-d2ab-470f-981c-a0cb1b30f2de" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="GetFlightsById" doc:id="7018a274-f2a9-4ba4-bba5-aa2d10280e1f">
+<!-- [STUDIO:"Listener"]		<http:listener doc:name="Listener" doc:id="94abc919-1904-4425-ab34-c015d6944069" config-ref="HTTP_Listener_config" path="/flights/{ID}" allowedMethods="GET" /> [STUDIO] -->
+		<db:select doc:name="Select" doc:id="df0cc5e6-74a3-45ed-a011-b450b6d92b22" config-ref="Database_Config3">
+			<db:sql><![CDATA[SELECT * FROM american WHERE ID = :ID]]></db:sql>
+			<db:input-parameters><![CDATA[#[{'ID' : attributes.uriParams.ID}]]]></db:input-parameters>
+		</db:select>
+		<logger level="DEBUG" doc:name="Logger" doc:id="6401c661-00d1-4e72-a449-67ae57aad62d" message="#[payload]" />
+		<ee:transform doc:name="Transform Message" doc:id="7edb6afd-90d1-44ce-9e04-1468ea8d498f">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="PostFlight" doc:id="2d613d4f-7c66-4333-805f-bc4110a2f14c" >
+<!-- [STUDIO:"Listener"]		<http:listener doc:name="Listener" doc:id="8bff0bfc-b592-42a6-bda3-36ba735947a8" config-ref="HTTP_Listener_config" path="/flights" allowedMethods="POST" /> [STUDIO] -->
+		<set-payload value='{"message":"Voo adicionado (SQN)"}' doc:name="Set Payload" doc:id="e5bc284a-849e-4315-b14d-031730dfc3aa" />
+	</flow>
+</mule>
