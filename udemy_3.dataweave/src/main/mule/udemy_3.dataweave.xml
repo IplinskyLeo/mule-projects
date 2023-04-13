@@ -414,4 +414,75 @@ output application/json
 			</ee:message>
 		</ee:transform>
 	</flow>
+	<flow name="dataweaveLambdasIntermediate" doc:id="d7f18e7c-d1e3-4efe-bb83-a91b635daba8" >
+		<ee:transform doc:name="Maps and Merges Fields from Items in Separated Arrays" doc:id="88097c7b-d771-4c04-a1c1-fce2411ee72b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+var books = [
+	{
+		bookId: 101,
+		title: "Mule Course",
+		"price": "20.00"
+	},
+	{
+		bookId: 102,
+		title: "Mule Not Course",
+		"price": "0.00"
+	},
+	{
+		bookId: 103,
+		title: "Mule Intro",
+		"price": "200.00"
+	},
+	{
+		bookId: 104,
+		title: "Mule essentials",
+		"price": "2000.00"
+	},
+]
+
+var authors = [
+	{
+		bookId: 101,
+		author: "Ipy"
+	},
+	{
+		bookId: 102,
+		author: "Leonardo"
+	},
+	{
+		bookId: 103,
+		author: "Leo"
+	},
+	{
+		bookId: 104,
+		author: "Iplinsky"
+	},
+]
+
+output application/json
+---
+// parei no video 29 aos 6:35s
+{
+	"booksResult": books map ((item, index) ->
+		// create dynamic variables
+		
+		using (id = item.bookId) {
+			"id": id,
+			"topic": item.title,
+			"cost": item.price,
+			// cria variaveis dinamicas
+			(authors filter ($.*bookId contains id) map(item) ->
+				{
+					// &.bookId refers the author array
+					"author": item.author
+				}
+			)
+
+		}
+	)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
 </mule>
