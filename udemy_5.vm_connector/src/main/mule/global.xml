@@ -11,6 +11,11 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 	<vm:config name="VM_Config" doc:name="VM Config" doc:id="12fcab61-6a64-4710-9fa8-9f032a46a9da" >
 		<vm:queues >
 			<vm:queue queueName="queue_basic" />
+			<vm:queue queueName="queue.A" />
+			<vm:queue queueName="queue.B" />
+			<vm:queue queueName="queue.C" />
+			<vm:queue queueName="queue.transient" />
+			<vm:queue queueName="queue.persistent" queueType="PERSISTENT" />
 		</vm:queues>
 	</vm:config>
 </mule>

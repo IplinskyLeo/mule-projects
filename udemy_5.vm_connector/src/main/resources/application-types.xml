@@ -41,6 +41,13 @@ type auto_4c79bcb5_0a7c_443e_acc0_ca685708a794_Input_Attributes = {|
 
 ]]></types:shape>
     </types:type>
+    <types:type name="vmPublishRequest" format="json">
+      <types:shape format="weave" example="examples/vm.json"><![CDATA[%dw 2.0
+
+type vmPublishRequest = {| name: String |} {"example": "{\\\"name\\\":\\\"John\\\"}"}
+
+]]></types:shape>
+    </types:type>
   </types:catalog>
   <types:enrichment select="#4c79bcb5-0a7c-443e-acc0-ca685708a794">
     <types:processor-declaration>
@@ -56,6 +63,15 @@ type auto_4c79bcb5_0a7c_443e_acc0_ca685708a794_Input_Attributes = {|
           <types:attributes type="auto_4c79bcb5-0a7c-443e-acc0-ca685708a794_Output-Attributes"/>
         </types:message>
       </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#5b99b8dc-68ce-4ddb-ae0a-3d8566dff6cd">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="vmPublishRequest"/>
+        </types:message>
+      </types:input-event>
     </types:processor-declaration>
   </types:enrichment>
 </types:mule>
